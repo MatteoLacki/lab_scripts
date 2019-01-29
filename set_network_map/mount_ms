@@ -1,0 +1,3 @@
+sudo mkdir -p /mnt/ms/$1
+sudo mount -t cifs -o user=stefan,domain=mz //192.168.1.100/$1 /mnt/ms/$1
+echo "Mounted $0 at /mnt/ms/$1"

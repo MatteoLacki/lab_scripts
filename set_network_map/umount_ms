@@ -1,0 +1,2 @@
+sudo umount /mnt/ms/$1
+echo "unmounted /mnt/ms/$1"
