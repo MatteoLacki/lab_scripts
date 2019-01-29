@@ -1,6 +1,8 @@
 import sys
 from glob import glob
 
+from parse_apex import extract_params
+
 in_pattern, out_path = sys.argv[1:3]
 
 def read_line(path, n):
