@@ -16,13 +16,34 @@ def parse_stats(path):
 	yield from zip(x,y)
 
 
+# def make_xml_parser(col_prefix=""):
+# 	def parse_xml_params(path):
+# 		tree = ET.parse(path)
+# 		root = tree.getroot()
+# 		for p in root.find('PARAMS'):
+# 			yield ":".join((col_prefix, p.attrib['NAME'])), p.attrib['VALUE']
+# 	return parse_xml_params
+
+
 def make_xml_parser(col_prefix=""):
 	def parse_xml_params(path):
-		tree = ET.parse(path)
-		root = tree.getroot()
-		for p in root.find('PARAMS'):
-			yield ":".join((col_prefix, p.attrib['NAME'])), p.attrib['VALUE']
+		"""Hopefully a quicker XML parser."""
+		with open(path, 'r') as f:
+			for l in f:
+				if "PARAM NAME" in l:
+					w = l.split('"')
+					k = w[1]
+					v = w[3]
+					try:
+						v = v.replace(',','.')
+						v = float(v)
+					except ValueError:
+						pass
+					yield "{}:{}".format(col_prefix, k), v 
+				if "</PARAMS>" in l:
+					break
 	return parse_xml_params
+
 
 
 def get_parse(parsers):
