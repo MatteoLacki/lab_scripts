@@ -33,6 +33,10 @@ parsers = dict(zip(output_names, (parse_stats, parse_xml_params, parse_xml_param
 def parse_files(files, search=output_names):
 	return {s: f for f in files for s in search if s in f}
 
+# TODO: replace the glob with the os.walk
+# the pattern must be RES/*/{S,T}*/*{stats.csv,Apex3D.xml,workflow.xml}
+glob(join(folder_path,"*","*"))
+
 def iter_paths(folder_path):
 	for folder in iglob(join(folder_path,"*","*")):
 		sample_set_no, raw_file_no = split(folder)
