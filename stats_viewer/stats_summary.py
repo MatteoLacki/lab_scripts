@@ -1,55 +1,42 @@
 import sys
 import os
-from os.path import join, split
-from glob import glob, iglob
-import xml.etree.ElementTree as ET
+from os.path import join
 import pandas as pd
 
-# folder_path = "/home/matteo/Projects/lab_scripts/data/RES"
+from parsers import parsers, get_sampleSetNo_rawFileNo, get_parse
+
+
 folder_path, csv_path = sys.argv[1:3]
+# folder_path = "/home/matteo/Projects/lab_scripts/data/RES"
+# csv_path = "test.csv"
 
 
-def read_line(path, n):
-	with open(path, "r") as f:
-		for i in range(n+1):
-			x = f.readline()
-	return x
+def iter_outputs(folder_path, file_patterns):
+	"""Iterate over all folders containing the results from output.
 
-def parse_stats(path):
-	"""Parse the _stat.csv file in the output of the pipeline."""
-	x = ('sample','mode','queries','peptides','proteins')
-	y = read_line(path, 1).replace('\n','').split(",")[1:]
-	yield from zip(x,y)
+	Args:
+		folder_path (str): Path to the root of the folder-tree being search.
+		file_patterns (tuple): These strings should be present in the names of files that qualify to be parsed.
+	"""
+	for root, dirs, files in os.walk(folder_path):
+		if files:
+			files_str = "|".join(files)
+			if any(fn in files_str for fn in file_patterns):
+				yield root, files
 
-def parse_xml_params(path):
-	tree = ET.parse(path)
-	root = tree.getroot()
-	for p in root.find('PARAMS'):
-		yield p.attrib['NAME'], p.attrib['VALUE']
 
-output_names = ('stats.csv', 'Apex3D.xml', 'workflow.xml')
-parsers = dict(zip(output_names, (parse_stats, parse_xml_params, parse_xml_params)))
-
-def parse_files(files, search=output_names):
-	return {s: f for f in files for s in search if s in f}
-
-# TODO: replace the glob with the os.walk
-# the pattern must be RES/*/{S,T}*/*{stats.csv,Apex3D.xml,workflow.xml}
-glob(join(folder_path,"*","*"))
-
-def iter_paths(folder_path):
-	for folder in iglob(join(folder_path,"*","*")):
-		sample_set_no, raw_file_no = split(folder)
-		_, sample_set_no = split(sample_set_no)
-		files = parse_files(os.listdir(folder))
-		row = {'sample_set_no': sample_set_no, 'raw_file_no': raw_file_no}
-		for f in files:
-			try:
-				for param, value in parsers[f](join(folder,files[f])):
-					row[param] = value
-			except FileNotFoundError as e:
-				print(e)
+def get_rows(outputs, parse):
+	for root, files in outputs:
+		row = {}
+		row['sample_set_no'], row['raw_file_no'] = get_sampleSetNo_rawFileNo(root)
+		for file in files:
+			row.update(parse(root, file))
 		yield row
 
-data_frame = pd.DataFrame(iter_paths(folder_path))
+parse = get_parse(parsers)
+outputs = iter_outputs(folder_path, parsers.keys())
+# root = "/home/matteo/Projects/lab_scripts/data/RES/2017-121/T180126_40"
+# file = "T180126_40_Apex3D.xml"
+# list(parse(root,path))
+data_frame = pd.DataFrame(get_rows(outputs, parse))
 data_frame.to_csv(path_or_buf=csv_path, index=False)
