@@ -1,6 +1,9 @@
-
 test_making_summary: ## Test the making of summary from Apex3D.xml, workflow.xml, and stats.csv
 	python3 stats_summary.py /home/matteo/Projects/lab_scripts/data/RES test.csv
+
+test_summary_on_server: ## Test if it is quicker to run locally.
+	python3 stats_summary.py /mnt/ms/idefix/RES test2.csv
+
 
 # -----------------------------------------------------------
 # -----  EVERYTHING BELOW THIS LINE IS NOT IMPORTANT --------
