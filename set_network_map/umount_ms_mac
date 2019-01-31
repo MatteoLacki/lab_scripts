@@ -1,2 +1,1 @@
-umount ~/ms/users
-umount ~/ms/data
+umount ~/ms/$1

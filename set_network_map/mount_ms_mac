@@ -1,4 +1,3 @@
-mkdir -p ~/ms/users
-mkdir -p ~/ms/data
-mount_smbfs //stefan@192.168.1.100/users ~/ms/users
-mount_smbfs //stefan@192.168.1.100/data ~/ms/data
+mkdir -p ~/ms/$1
+mount_smbfs //stefan@192.168.1.100/$1 ~/ms/$1
+echo "Mounted $1."
