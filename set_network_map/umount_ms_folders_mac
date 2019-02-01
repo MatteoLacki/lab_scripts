@@ -1,0 +1,6 @@
+./umount_ms_mac users
+./umount_ms_mac data
+./umount_ms_mac idefix
+./umount_ms_mac synapt
+./umount_ms_mac idefix_rawdata
+./umount_ms_mac obelix_rawdata

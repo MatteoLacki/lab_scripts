@@ -1,0 +1,4 @@
+# Make the header for the csv.
+find $1 -print -quit | xargs sed -n 1p > $2
+# Append all the entires to the csv.
+find $1 -print0 | xargs -0 -n 1 sed -n 2p >> $2
