@@ -19,3 +19,5 @@ net use U: \\msserver\users
 net use L: \\msserver\legacy
 net use X: \\msserver\data
 net use Y: \\msserver\symphony
+
+pause
