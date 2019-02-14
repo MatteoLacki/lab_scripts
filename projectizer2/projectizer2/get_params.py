@@ -3,11 +3,8 @@ import argparse
 from source import dump_params_to_jsons
 
 
-p = argparse.ArgumentParser(description="Write .")
-p.add_argument( "-f", "--folder",
-	help="Folder to be searched for results.",
-	required=True)
-
+p = argparse.ArgumentParser(description="Dump parameters from xml files into jsons.")
+p.add_argument("folder", help="Folder to be searched for results.")
 p.add_argument( "-v", "--verbose",
                 action='store_const',
                 const=True,
