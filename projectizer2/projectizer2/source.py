@@ -110,7 +110,7 @@ def dump_params_to_jsons(fp, verbose=True):
 		if param_dict:
 			try:
 				with (p/"params.json").open('w') as h:
-					json.dump(param_dict, h)
+					json.dump(param_dict, h, indent=3)
 				if verbose:
 					print("Dumped {}.".format(p))
 			except Exception as e:
