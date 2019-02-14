@@ -2,28 +2,13 @@ import sys
 import os
 import re
 
-from parsers import parsers, get_sampleSetNo_rawFileNo, get_parse
+from parsers import parsers, get_sampleSetNo_rawFileNo
 from csv_tsv import write_rows
 
 verbose = True
 folder_path, csv_path = sys.argv[1:3]
 folder_pattern = re.compile("\d+-\d+/.\d+_\d+") # windows? linux = /
 
-def parse_xml_params(path):
-    """Hopefully a quicker XML parser."""
-    with open(path, 'r') as f:
-        for l in f:
-            if "PARAM NAME" in l:
-                w = l.split('"')
-                k = w[1]
-                v = w[3]
-                try:
-                    v = v.replace(',','.')
-                    v = float(v)
-                except ValueError:
-                    pass
-                if k == 'SampleDescription':
-                    return v
 
 
 def iter_outputs(folder_path, header=True):
@@ -51,6 +36,6 @@ def test_outputs(os='mac'):
         csv_path = "/Users/matteo/Projects/lab_scripts/projectizer2/tests/project2.csv"
         folder_path = "/Users/matteo/Projects/lab_scripts/projectizer2/2018-061"
     if os is 'linux':
-        folder_path = "/home/matteo/Projects/lab_scripts/projectizer2/2018-061"
+        folder_path = "/home/matteo/Projects/lab_scripts/projectizer2/data/2018-061"
         csv_path = "/home/matteo/Projects/lab_scripts/projectizer2/tests/project2.csv"
     write_rows(iter_outputs(folder_path), csv_path)
