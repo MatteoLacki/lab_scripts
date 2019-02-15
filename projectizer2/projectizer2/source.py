@@ -131,7 +131,7 @@ def dump_to_csv(rows, path):
     path = Path(path)
     assert path.suffix == '.csv', "Writing only to csv."
     path.parent.mkdir(parents=True, exist_ok=True)
-    with path.open('w') as f:
+    with path.open('w', newline='') as f:
         writer = csv.writer(f, delimiter=',')
         for row in rows:
             writer.writerow(row)
