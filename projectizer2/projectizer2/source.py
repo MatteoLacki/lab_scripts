@@ -2,6 +2,7 @@ from pathlib import Path
 import re
 import json
 import os
+import csv
 
 
 def read_line(path, n):
@@ -118,3 +119,20 @@ def dump_params_to_jsons(fp, verbose=True):
 				print(p)
 	if verbose:
 		print('Thank you for patience.')
+
+
+def dump_to_csv(rows, path):
+    """Dump rows to a csv.
+
+    Args:
+        rows (iterable): rows to dump.
+        path (Path): where to store the csv.
+    """
+    path = Path(path)
+    assert path.suffix == '.csv', "Writing only to csv."
+    path.parent.mkdir(parents=True, exist_ok=True)
+    with path.open('w') as f:
+        writer = csv.writer(f, delimiter=',')
+        for row in rows:
+            writer.writerow(row)
+
