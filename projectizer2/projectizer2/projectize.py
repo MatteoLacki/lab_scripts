@@ -36,12 +36,23 @@ def iter_rows(paths, header=True, verbose=False):
         p = Path(p)
         with open(p/"params.json", 'r') as f:
             sample_desc = json.load(f)['work:SampleDescription']
-        pep3dspec = next(p.glob("*_Pep3D_Spectrum.xml"))
-        workflow = next(p.glob("*_workflow.xml"))
+        try:
+            pep3dspec = next(p.glob("*_Pep3D_Spectrum.xml"))
+        except StopIteration as e:
+            print("Attention: File {} was not analysed as '*_Pep3D_Spectrum.xml' was (most likely) missing.".format(p.name))
+            raise(e)
+        try:
+            workflow = next(p.glob("*_workflow.xml"))
+        except RuntimeError as e:
+            print("Attention: File {} was not analysed as '*_workflow.xml' was (most likely) missing.".format(p.name))
+            raise(e)
         if verbose:
             print(p.name, pep3dspec, workflow, sample_desc)
         yield p.name, pep3dspec, workflow, sample_desc
 
-dump_to_csv(iter_rows(a.folders, True, a.verbose), a.target)
+try:
+    dump_to_csv(iter_rows(a.folders, True, a.verbose), a.target)
+except RuntimeError:
+    print("WARNING: THERE WAS AN ERROR!!!")
 print("Thank you for using our services. Have a good day!")
 
