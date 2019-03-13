@@ -2,6 +2,7 @@ from pathlib import Path
 import re
 import json
 import csv
+from os import walk
 
 sample_set = re.compile("20\d+-\d+")
 raw_file = re.compile("\d+_\d+")
@@ -77,17 +78,22 @@ def parse_folder(f):
                 yield param
 
 
-def iter_output_path(fp):
+def iter_output_path(fps, recursive=False):
     """Iterate over paths that match the pattern containing xmls.
 
     Args:
-        fp (str or path): path to where to recursively look into.
+        fps (list of strings or pathlib paths): paths to where to recursively look into.
     Yields:
         A sequence of paths to the folders with data.
     """
-    for r in Path(fp).glob("**/"): # iterate over all subfolders
-        if raw_file.search(r.name) and sample_set.search(r.parent.name):
-            yield Path(r)
+    for fp in fps: # iterate over potentially multiple folders
+        fp = Path(fp)
+        fp.resolve()
+        if recursive:
+            for x in walk(fp):
+                yield Path(x[0])
+        else:
+            yield fp
 
 
 def dump_params_to_jsons(file_paths, verbose=True):

@@ -1,6 +1,4 @@
-import sys
-import os
-import re
+import sys import os import re
 
 from parsers import parsers, get_sampleSetNo_rawFileNo
 from csv_tsv import write_rows

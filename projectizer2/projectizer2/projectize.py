@@ -1,3 +1,10 @@
+"""
+Prepare a csv input for ISOQuant.
+It is a projectizer v. 2.0
+
+Author: MatteoLacki
+"""
+
 import argparse
 import json
 from pathlib import Path
@@ -5,7 +12,7 @@ from pathlib import Path
 from source import dump_to_csv
 
 
-p = argparse.ArgumentParser(description="Prepare a csv input file for ISOQuant.")
+p = argparse.ArgumentParser(description="Prepare a csv input file for ISOQuant. The files should include the necessary 'params.json' file.")
 p.add_argument("folders",
     help="Folders to be included in the ISOQuant analysis.",
     nargs="+")
@@ -52,7 +59,6 @@ def iter_rows(paths, header=True, verbose=False):
 
 try:
     dump_to_csv(iter_rows(a.folders, True, a.verbose), a.target)
+    print("Thank you for using our services. Have a good day!")
 except RuntimeError:
-    print("WARNING: THERE WAS AN ERROR!!!")
-print("Thank you for using our services. Have a good day!")
-
+    print("WARNING: ERRORS ENCOUNTERED!!!")
