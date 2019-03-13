@@ -105,7 +105,7 @@ def dump_params_to_jsons(file_paths, verbose=True):
                 with (p/"params.json").open('w') as h:
                     json.dump(param_dict, h, indent=3)
                 if verbose:
-                    print("Dumped {}.".format(p))
+                    print("dumped {}".format(p))
             except Exception as e:
                 print(e)
                 print(p)

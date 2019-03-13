@@ -30,9 +30,9 @@ if a.verbose:
 
 
 
-def iter_rows(paths, header=True, verbose=False):
-    """Iterate over all folders containing the results from output.
-
+def parse_paths(paths, header=True, verbose=False):
+    """Iterate over paths to produce rows for the csv file for IsoQuant.
+    
     Args:
         path (str): Path to the root of the folder-tree being search.
         file_patterns (tuple): These strings should be present in the names of files that qualify to be parsed.
@@ -47,18 +47,13 @@ def iter_rows(paths, header=True, verbose=False):
             pep3dspec = next(p.glob("*_Pep3D_Spectrum.xml"))
         except StopIteration as e:
             print("Attention: File {} was not analysed as '*_Pep3D_Spectrum.xml' was (most likely) missing.".format(p.name))
-            raise(e)
         try:
             workflow = next(p.glob("*_workflow.xml"))
         except RuntimeError as e:
             print("Attention: File {} was not analysed as '*_workflow.xml' was (most likely) missing.".format(p.name))
-            raise(e)
         if verbose:
             print(p.name, pep3dspec, workflow, sample_desc)
         yield p.name, pep3dspec, workflow, sample_desc
 
-try:
-    dump_to_csv(iter_rows(a.folders, True, a.verbose), a.target)
-    print("Thank you for using our services. Have a good day!")
-except RuntimeError:
-    print("WARNING: ERRORS ENCOUNTERED!!!")
+dump_to_csv(iter_rows(a.folders, True, a.verbose), a.target)
+print("Thank you for using our services. Have a good day!")
