@@ -78,8 +78,8 @@ def parse_folder(f):
                 yield param
 
 
-def iter_output_path(fps, recursive=False):
-    """Iterate over paths that match the pattern containing xmls.
+def iter_input_folders(fps, recursive=False):
+    """Iterate over the input folders all subfolders (if recursive).
 
     Args:
         fps (list of strings or pathlib paths): paths to where to recursively look into.
@@ -89,7 +89,7 @@ def iter_output_path(fps, recursive=False):
     for fp in fps: # iterate over potentially multiple folders
         fp = Path(fp)
         fp.resolve()
-        if recursive:
+        if recursive: # iter into the folders
             for x in walk(fp):
                 yield Path(x[0])
         else:

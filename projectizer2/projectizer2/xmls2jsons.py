@@ -1,6 +1,6 @@
 import argparse
 
-from source import dump_params_to_jsons, iter_output_path
+from source import dump_params_to_jsons, iter_input_folders
 
 
 p = argparse.ArgumentParser(description="Dump parameters from xml files into jsons.")
@@ -20,5 +20,5 @@ p.add_argument( "-v", "--verbose",
 a = p.parse_args()
 if a.verbose:
     print(a.folders)
-file_paths = iter_output_path(a.folders, a.recursive)
+file_paths = iter_input_folders(a.folders, a.recursive)
 dump_params_to_jsons(file_paths, a.verbose)
