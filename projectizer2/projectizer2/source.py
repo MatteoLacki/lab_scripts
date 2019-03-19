@@ -137,13 +137,16 @@ class MissingInfoForIsoquant(Exception):
 
 def parse_raw_folder(path):
     """Parse a particular Waters raw folder as needed for IsoQuant project."""
-    p = Path(p)
-    with open(p/"params.json", 'r') as f:
-        try:
+    p = Path(path)
+    try:
+        with open(p/"params.json", 'r') as f:
             sample_desc = json.load(f)['work:SampleDescription']
-        except KeyError:
-            print("'work:SampleDescription' missing in params.json")
-            raise MissingInfoForIsoquant
+    except KeyError:
+        print("'work:SampleDescription' missing in params.json")
+        raise MissingInfoForIsoquant
+    except FileNotFoundError:
+        print("'params.json' missing. Run 'xmls2jsons' on this folder, or think.")
+        raise MissingInfoForIsoquant
     try:
         pep3dspec = next(p.glob("*_Pep3D_Spectrum.xml"))
     except StopIteration as e:
@@ -151,7 +154,6 @@ def parse_raw_folder(path):
         raise MissingInfoForIsoquant
     try:
         workflow = next(p.glob("*_workflow.xml"))
-        raise MissingInfoForIsoquant
     except RuntimeError as e:
         print("Attention: File {} was not analysed as '*_workflow.xml' was (most likely) missing.".format(p.name))
         raise MissingInfoForIsoquant
