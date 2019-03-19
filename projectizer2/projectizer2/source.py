@@ -4,8 +4,8 @@ import json
 import csv
 from os import walk
 
-sample_set = re.compile("20\d+-\d+")
-raw_file = re.compile("\d+_\d+")
+sample_set = re.compile("(\d{4}-\d{3}|[^[Hh]*[Hh][Ee][Ll][Aa].*)$")
+raw_file = re.compile("[TSIO]+\d{6}_(BM){0,1}\d{2,3}$")
 
 
 def read_line(path, n):
@@ -113,18 +113,48 @@ def dump_params_to_jsons(file_paths, verbose=True):
         print('Thank you for patience.')
 
 
-def dump_to_csv(rows, path):
+def dump_to_csv(path, rows, header=None):
     """Dump rows to a csv.
 
     Args:
+        path (str or pathlib.Path): Path to where to store the csv.
         rows (iterable): rows to dump.
-        path (Path): where to store the csv.
+        header (list/tuple of str): Strings to put as header.
     """
     path = Path(path)
     assert path.suffix == '.csv', "Writing only to csv."
     path.parent.mkdir(parents=True, exist_ok=True)
     with path.open('w', newline='') as f:
         writer = csv.writer(f, delimiter=',')
+        if header is not None:
+            writer.writerow(header)
         for row in rows:
             writer.writerow(row)
+
+class MissingInfoForIsoquant(Exception):
+    pass
+
+
+def parse_raw_folder(path):
+    """Parse a particular Waters raw folder as needed for IsoQuant project."""
+    p = Path(p)
+    with open(p/"params.json", 'r') as f:
+        try:
+            sample_desc = json.load(f)['work:SampleDescription']
+        except KeyError:
+            print("'work:SampleDescription' missing in params.json")
+            raise MissingInfoForIsoquant
+    try:
+        pep3dspec = next(p.glob("*_Pep3D_Spectrum.xml"))
+    except StopIteration as e:
+        print("Attention: File {} was not analysed as '*_Pep3D_Spectrum.xml' was (most likely) missing.".format(p.name))
+        raise MissingInfoForIsoquant
+    try:
+        workflow = next(p.glob("*_workflow.xml"))
+        raise MissingInfoForIsoquant
+    except RuntimeError as e:
+        print("Attention: File {} was not analysed as '*_workflow.xml' was (most likely) missing.".format(p.name))
+        raise MissingInfoForIsoquant
+    return p.name, pep3dspec, workflow, sample_desc
+
 
