@@ -1,6 +1,6 @@
-./mount_ms_mac users
-./mount_ms_mac data
-./mount_ms_mac idefix
-./mount_ms_mac synapt
-./mount_ms_mac idefix_rawdata
-./mount_ms_mac obelix_rawdata
+mount_ms_mac users
+mount_ms_mac data
+mount_ms_mac idefix
+mount_ms_mac synapt
+mount_ms_mac idefix_rawdata
+mount_ms_mac obelix_rawdata
